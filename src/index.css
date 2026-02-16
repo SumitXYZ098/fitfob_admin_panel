@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+.plus-jakarta-sans {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+:root {
+  --background: #f2f2f2;
+  --white: #ffffff;
+  --primary: #e23744;
+  --light-primary: #ffdfe2;
+  --black: #1c1c1c;
+  --secondary-text: #6b7280;
+  --green: #008000;
+  --lightGreen: #00800029;
+  --red: #ff0000;
+  --lightRed: #ff000029;
+  --purple: #800080;
+  --lightPurple: #80008029;
+  --yellow: #fcd501;
+  --lightYellow: #fcd50133;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #f2f2f2;
+    --white: #ffffff;
+    --primary: #e23744;
+    --light-primary: #ffdfe2;
+    --black: #1c1c1c;
+    --secondary-text: #6b7280;
+    --green: #008000;
+    --lightGreen: #00800029;
+    --red: #ff0000;
+    --lightRed: #ff000029;
+    --purple: #800080;
+    --lightPurple: #80008029;
+    --yellow: #fcd501;
+    --lightYellow: #fcd50133;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-white: var(--white);
+  --color-primary: var(--primary);
+  --color-light-primary: var(--light-primary);
+  --color-black: var(--black);
+  --color-secondary-text: var(--secondary-text);
+  --color-green: var(--green);
+  --color-lightGreen: var(--lightGreen);
+  --color-red: var(--red);
+  --color-lightRed: var(--lightRed);
+  --color-purple: var(--purple);
+  --color-lightPurple: var(--lightPurple);
+  --color-yellow: var(--yellow);
+  --color-lightYellow: var(--lightYellow);
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-y: scroll;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+body {
+  background-color: var(--white);
+  color: var(--black);
+}
+.app {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  /* overflow: hidden; */
+}
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
+}
