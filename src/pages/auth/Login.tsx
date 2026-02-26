@@ -2,7 +2,7 @@ import { ICONS } from "../../assets/exports";
 import { useForm } from "react-hook-form";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import TextInput from "../../components/modules/textInput/TextInput";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   Dialog,
@@ -49,6 +49,16 @@ const Login = () => {
   const renderPasswordVisibilityIcon = () => {
     return showPassword ? <Visibility /> : <VisibilityOff />;
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      setSession(
+        JSON.parse(localStorage.getItem("user") || "").jwt,
+        JSON.parse(localStorage.getItem("user") || "").user.id,
+      );
+      navigate("/");
+    }
+  }, [setSession, navigate]);
   const {
     register,
     handleSubmit,
@@ -100,7 +110,6 @@ const Login = () => {
     );
   };
 
-  console.log(tempToken, "token");
   const handleAuthenticateOtpSubmit = (data: { otp: string }) => {
     setGlobalLoader(true);
     if (sessionStorage.getItem("mfaActive") === "true") {

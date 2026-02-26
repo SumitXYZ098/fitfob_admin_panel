@@ -9,10 +9,12 @@
 
 :root {
   --background: #f2f2f2;
+  --bg: #f6f6f6;
   --white: #ffffff;
   --primary: #e23744;
   --light-primary: #ffdfe2;
   --black: #1c1c1c;
+  --black50: #787571;
   --secondary-text: #6b7280;
   --green: #008000;
   --lightGreen: #00800029;
@@ -27,10 +29,12 @@
 @media (prefers-color-scheme: light) {
   :root {
     --background: #f2f2f2;
+    --bg: #f6f6f6;
     --white: #ffffff;
     --primary: #e23744;
     --light-primary: #ffdfe2;
     --black: #1c1c1c;
+    --black50: #787571;
     --secondary-text: #6b7280;
     --green: #008000;
     --lightGreen: #00800029;
@@ -45,10 +49,12 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-bg: var(--bg);
   --color-white: var(--white);
   --color-primary: var(--primary);
   --color-light-primary: var(--light-primary);
   --color-black: var(--black);
+  --color-black50: var(--black50);
   --color-secondary-text: var(--secondary-text);
   --color-green: var(--green);
   --color-lightGreen: var(--lightGreen);

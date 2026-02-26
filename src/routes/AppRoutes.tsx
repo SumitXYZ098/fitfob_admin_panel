@@ -15,8 +15,8 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { token } = useAuthStore();
   const location = useLocation();
-
-  if (!localStorage.getItem("user") || !token) {
+  console.log(token);
+  if (!localStorage.getItem("user")) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
@@ -37,6 +37,22 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <div>Settings Page</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <div>Profile Page</div>
           </ProtectedRoute>
         }
       />
