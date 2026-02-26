@@ -1,7 +1,6 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router";
 import Login from "../pages/auth/Login";
 import Logout from "../pages/auth/Logout";
-import { useAuthStore } from "../store/auth.store";
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ForgotPassword from "../pages/auth/ForgotPassword";
@@ -9,9 +8,7 @@ import VerifyOtp from "../pages/auth/VerifyOtp";
 import ResetPassword from "../pages/auth/ResetPassword";
 
 const ProtectedRoute = () => {
-  const { token } = useAuthStore();
   const location = useLocation();
-  console.log(token);
   if (!localStorage.getItem("user")) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }

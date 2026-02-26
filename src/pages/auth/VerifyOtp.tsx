@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import useSnackBarStore from "../../store/snackBar.store";
 import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
+import { useForgotPassword, useVerifyOtp } from "../../hooks/auth/useLogin";
+import { useUIStore } from "../../store/ui.store";
 
 interface VerifyOtpPayload {
   identifier: string;
@@ -14,8 +16,11 @@ interface VerifyOtpPayload {
 
 const VerifyOtp = () => {
   const [timer, setTimer] = useState(0);
+  const { setGlobalLoader } = useUIStore();
   const { setSnackBar } = useSnackBarStore();
   const navigate = useNavigate();
+  const { mutate: forgotPasswordMutate } = useForgotPassword();
+  const { mutate: verifyOtpMutate } = useVerifyOtp();
 
   const {
     handleSubmit,
@@ -30,7 +35,7 @@ const VerifyOtp = () => {
     mode: "onChange",
   });
 
-  const formDataSessionStr = sessionStorage.getItem("forgotPassword");
+  const formDataSessionStr = localStorage.getItem("forgotPasswordEmail");
   if (formDataSessionStr) {
     const formData = JSON.parse(formDataSessionStr);
     setValue("identifier", formData.email);
@@ -46,8 +51,25 @@ const VerifyOtp = () => {
 
   const handleResendOtp = async () => {
     try {
-      setSnackBar("OTP resent to your email", "success");
-      setTimer(60);
+      forgotPasswordMutate(
+        {
+          identifier: formDataSessionStr
+            ? JSON.parse(formDataSessionStr).email
+            : "",
+        },
+        {
+          onSuccess: (res) => {
+            if (res.message === "OTP sent successfully") {
+              setTimer(60);
+              setSnackBar("OTP resent to your email", "success");
+            }
+          },
+          onError: (error) => {
+            setSnackBar(error.message, "error");
+            console.log(error.message, "Error");
+          },
+        },
+      );
     } catch (err: any) {
       setSnackBar(err?.message || "Failed to resend OTP", "error");
     }
@@ -58,7 +80,31 @@ const VerifyOtp = () => {
       Email: data.identifier,
       Otp: Number(data.otp),
     });
-    navigate("/reset-password");
+    setGlobalLoader(true);
+    verifyOtpMutate(
+      {
+        identifier: data.identifier,
+        otp: data.otp,
+      },
+      {
+        onSuccess: (res) => {
+          setGlobalLoader(false);
+          console.log(res);
+          if (res.verified) {
+            localStorage.setItem("resetToken", res.resetToken);
+            setSnackBar("OTP verified successfully", "success");
+            navigate("/reset-password");
+          } else {
+            setSnackBar("Invalid OTP. Please try again.", "error");
+          }
+        },
+        onError: (error) => {
+          setGlobalLoader(false);
+          setSnackBar(error.message, "error");
+          console.log(error.message, "Error");
+        },
+      },
+    );
   };
 
   const onError = () => {

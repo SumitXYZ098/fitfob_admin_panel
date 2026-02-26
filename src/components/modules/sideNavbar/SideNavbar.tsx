@@ -11,7 +11,7 @@ const SideNavBar = () => {
 
   const handleLinkPress = (href: string) => {
     if (href === "Log Out") {
-      navigate("/login");
+      navigate("/logout");
     }
   };
   return (

@@ -76,7 +76,6 @@ const Login = () => {
   });
 
   const onSubmit = (data: LoginFormInputs) => {
-    console.log("Form data:", data);
     setGlobalLoader(true);
     login(
       {
@@ -86,7 +85,6 @@ const Login = () => {
       {
         onSuccess: (data) => {
           setGlobalLoader(false);
-          console.log(data, "Response");
           if (
             data &&
             (localStorage.getItem("mfa") === null ||
@@ -122,7 +120,6 @@ const Login = () => {
         {
           onSuccess: (data) => {
             setGlobalLoader(false);
-            console.log(data, "User on MFA Verify");
             setOpen(false);
             setSnackBar(data.message || "Login successfully!", "success");
             if (data.message || data.mfaResetRequired) {
@@ -137,7 +134,6 @@ const Login = () => {
             } else if (data.jwt) {
               sessionStorage.setItem("user", JSON.stringify(data));
               localStorage.setItem("user", JSON.stringify(data));
-              console.log(data, "User");
               setSession(data.jwt, data.user.id);
               navigate("/");
             }

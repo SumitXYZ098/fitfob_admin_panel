@@ -57,3 +57,65 @@ export const mfaVerifyApi = async (data: mfaVerify) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Password Reset APIs
+interface forgotPassword {
+  identifier: string;
+}
+interface verifyOtp {
+  identifier: string;
+  otp: string;
+}
+interface resetPassword {
+  identifier: string;
+  password: string;
+  confirmPassword: string;
+  resetToken: string;
+}
+export const forgotPasswordApi = async (data: forgotPassword) => {
+  try {
+    const response = await axios.post(EndPoints.forgotPassword, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const verifyOtpApi = async (data: verifyOtp) => {
+  try {
+    const response = await axios.post(EndPoints.verifyOtp, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const resetPasswordApi = async (data: resetPassword) => {
+  try {
+    const response = await axios.post(EndPoints.resetPassword, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};

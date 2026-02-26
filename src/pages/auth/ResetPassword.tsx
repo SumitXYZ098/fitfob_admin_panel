@@ -8,15 +8,24 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import CustomButton from "../../components/atoms/customButton/CustomButton";
+import { passwordSecurity } from "./passwordSecurity";
+import { useResetPassword } from "../../hooks/auth/useLogin";
+import { useUIStore } from "../../store/ui.store";
+import useSnackBarStore from "../../store/snackBar.store";
 
 interface ResetPasswordPayload {
+  identifier: string;
   newPassword: string;
   confirmPassword: string;
+  resetToken: string;
 }
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const { mutate: resetPasswordMutate } = useResetPassword();
+  const { setGlobalLoader } = useUIStore();
+  const { setSnackBar } = useSnackBarStore();
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
   const toggleConfirmPasswordVisibility = () =>
@@ -28,19 +37,56 @@ const ResetPassword = () => {
     register,
     formState: { errors },
     watch,
+    setValue,
+    getValues,
   } = useForm<ResetPasswordPayload>({
     defaultValues: {
+      identifier: "",
       newPassword: "",
       confirmPassword: "",
+      resetToken: "",
     },
     mode: "onChange",
   });
+
+  const formDataSessionStr = localStorage.getItem("forgotPasswordEmail");
+  const token = localStorage.getItem("resetToken");
+  if (formDataSessionStr && token) {
+    const formData = JSON.parse(formDataSessionStr);
+    setValue("identifier", formData.email);
+    setValue("resetToken", token);
+  }
 
   const newPassword = watch("newPassword");
 
   const onSubmit = (data: ResetPasswordPayload) => {
     console.log("Reset password", data);
-    navigate("/login");
+    setGlobalLoader(true);
+    resetPasswordMutate(
+      {
+        identifier: data.identifier,
+        password: data.newPassword,
+        confirmPassword: data.confirmPassword,
+        resetToken: data.resetToken,
+      },
+      {
+        onSuccess: (res) => {
+          setGlobalLoader(false);
+          if (res.message === "Password reset successful") {
+            setSnackBar("Password reset successfully.", "success");
+            localStorage.removeItem("resetToken");
+            localStorage.removeItem("forgotPasswordEmail");
+            navigate("/login");
+          }
+        },
+        onError: (error) => {
+          setGlobalLoader(false);
+          setSnackBar(error.message, "error");
+          console.log(error.message, "Error");
+        },
+      },
+    );
+    navigate("/reset-password");
   };
 
   const onError = () => {
@@ -67,14 +113,15 @@ const ResetPassword = () => {
           type={showPassword ? "text" : "password"}
           rules={{
             required: "Please enter your password.",
+
             minLength: {
               value: 8,
               message: "Password must be at least 8 characters long.",
             },
-            pattern: {
-              value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,
-              message:
-                "Password must contain at least one uppercase letter, one lowercase letter, and one number.",
+
+            validate: (value: string) => {
+              const error = passwordSecurity(value, getValues("identifier"));
+              return error || true;
             },
           }}
           control={control}

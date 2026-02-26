@@ -2,7 +2,10 @@ import { useForm } from "react-hook-form";
 import CustomButton from "../../components/atoms/customButton/CustomButton";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import TextInput from "../../components/modules/textInput/TextInput";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useForgotPassword } from "../../hooks/auth/useLogin";
+import { useUIStore } from "../../store/ui.store";
+import useSnackBarStore from "../../store/snackBar.store";
 
 interface ForgotPasswordPayload {
   email: string;
@@ -10,6 +13,10 @@ interface ForgotPasswordPayload {
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { mutate: forgotPasswordMutate } = useForgotPassword();
+  const { setGlobalLoader } = useUIStore();
+  const { setSnackBar } = useSnackBarStore();
+
   const {
     handleSubmit,
     control,
@@ -22,14 +29,36 @@ const ForgotPassword = () => {
   });
   const onSubmit = (data: ForgotPasswordPayload) => {
     console.log("Form data:", data);
-    sessionStorage.setItem("forgotPassword", JSON.stringify({ ...data }));
-    navigate("/verify-otp");
+    setGlobalLoader(true);
+    forgotPasswordMutate(
+      {
+        identifier: data.email,
+      },
+      {
+        onSuccess: (res) => {
+          setGlobalLoader(false);
+          setSnackBar(res.message, "success");
+          if (res.message === "OTP sent successfully") {
+            localStorage.setItem("forgotPasswordEmail", data.email);
+            navigate("/verify-otp");
+          }
+        },
+        onError: (error) => {
+          setGlobalLoader(false);
+          setSnackBar(error.message, "error");
+          console.log(error.message, "Error");
+        },
+      },
+    );
   };
   const onError = () => {
     console.log("Form Error", errors);
   };
   return (
     <AuthLayout customClasses="items-start">
+      <Link to="/login" className="text-primary text-base font-medium">
+        Back to Login
+      </Link>
       <p className="text-[64px] leading-18 font-extrabold mb-3">
         Forgot password
       </p>
@@ -54,6 +83,7 @@ const ForgotPassword = () => {
           control={control}
           name="email"
         />
+
         <CustomButton
           label="Send Code"
           type="submit"
