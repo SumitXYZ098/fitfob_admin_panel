@@ -17,6 +17,7 @@ import ViewClubRequest from "../pages/viewClubRequest/ViewClubRequest";
 import ClubList from "../pages/clubs/ClubList";
 import { useEffect } from "react";
 import { useAuthStore } from "../store/auth.store";
+import EditClubRequest from "../pages/editClubRequest/EditClubRequest";
 
 const ProtectedRoute = () => {
   const location = useLocation();
@@ -68,12 +69,13 @@ const AppRoutes = () => {
         <Route path="/club-request">
           <Route index element={<ClubRequest />} />
           <Route path="view/:id" element={<ViewClubRequest />} />
-          <Route path="edit/:id" element={<ViewClubRequest />} />
+          <Route path="edit/:id" element={<EditClubRequest />} />
         </Route>
 
         <Route path="/clubs">
           <Route index element={<ClubList />} />
           <Route path="view/:id" element={<ViewClubRequest />} />
+          <Route path="edit/:id" element={<EditClubRequest />} />
         </Route>
 
         <Route path="/app">

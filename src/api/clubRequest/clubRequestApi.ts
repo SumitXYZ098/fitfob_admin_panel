@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { EndPoints } from "../endpoints";
 import api from "../apiInstance";
@@ -5,7 +6,6 @@ import { useAuthStore } from "../../store/auth.store";
 
 export const unverifiedOwnersApi = async (search: string) => {
   const { token } = useAuthStore.getState();
-  console.log(token);
 
   try {
     const response = await api.get(EndPoints.unverifiedClubOwners(search), {
@@ -68,6 +68,28 @@ export const verifyApproval = async (userId: number) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data.error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const updateClubOwner = async (
+  ownerId: number,
+  payload: { data: any },
+) => {
+  const { token } = useAuthStore.getState();
+
+  try {
+    const response = await api.put(EndPoints.getClubOwner(ownerId), payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.error?.message);
     }
     throw new Error("An unexpected error occurred");
   }

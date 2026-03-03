@@ -4,17 +4,15 @@ import { useClubOwnerDetails } from "../../hooks/clubOwner/useClubOwner";
 import CustomBox from "../../components/atoms/customBox/CustomBox";
 import { ICONS } from "../../assets/exports";
 import ActivityIndicator from "../../components/atoms/activityIndicator/ActivityIndicator";
-import {
-  formatFileSize,
-  formatTo12Hour,
-  getDaysShort,
-} from "../../utility/utili";
+import { formatTo12Hour, getDaysShort } from "../../utility/utili";
 import { Dialog } from "@mui/material";
 import { useState } from "react";
 import { useUIStore } from "../../store/ui.store";
 import { verifyApproval } from "../../api/clubRequest/clubRequestApi";
 import useSnackBarStore from "../../store/snackBar.store";
 import CustomButton from "../../components/atoms/customButton/CustomButton";
+import { FileCard } from "../../components/atoms/fileCard/FileCard";
+import { InfoField } from "../../components/atoms/infoField/InfoField";
 
 const ViewClubRequest = () => {
   const { id } = useParams();
@@ -23,8 +21,6 @@ const ViewClubRequest = () => {
   const [openModal, setOpenModal] = useState(false);
   const { setGlobalLoader } = useUIStore();
   const { setSnackBar } = useSnackBarStore();
-
-  console.log(selectedOwner);
 
   const logo = selectedOwner?.logo
     ? selectedOwner.logo.url
@@ -87,14 +83,16 @@ const ViewClubRequest = () => {
                   {selectedOwner?.clubName}
                 </span>
                 <div
-                  className={`relative px-6.25 py-2 text-xs text-white rounded-[52px] ${bgColor}`}
+                  className={`relative px-6.25 py-2 text-xs text-white rounded-[52px] ${selectedOwner?.user.isVerified ? "bg-lightGreen text-green!" : bgColor}`}
                 >
-                  {selectedOwner?.user.isVerified === false && "Pending"}
-                  <span
-                    className={`absolute -top-1.5 -right-1.5 bg-white px-2 py-1 rounded-full text-secondary-text border ${borderColor}`}
-                  >
-                    {days}D
-                  </span>
+                  {selectedOwner?.user.isVerified ? "Approved" : "Pending"}
+                  {!selectedOwner?.user.isVerified && (
+                    <span
+                      className={`absolute -top-1.5 -right-1.5 bg-white px-2 py-1 rounded-full text-secondary-text border ${borderColor}`}
+                    >
+                      {days}D
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="flex flex-row items-center">
@@ -117,25 +115,33 @@ const ViewClubRequest = () => {
               <img src={ICONS.Chat} className="w-full h-full" />
             </button>
             <button
-              onClick={() =>
-                navigate(`/club-request/edit/${selectedOwner?.id}`)
-              }
+              onClick={() => {
+                if (selectedOwner?.user.isVerified) {
+                  navigate(`/clubs/edit/${selectedOwner?.id}`);
+                } else {
+                  navigate(`/club-request/edit/${selectedOwner?.id}`);
+                }
+              }}
               className="bg-background w-12 h-12 rounded p-2.5 items-center cursor-pointer "
             >
               <img src={ICONS.Edit} className="w-full h-full" />
             </button>
-            <button
-              onClick={() => handleAccept(selectedOwner?.user.id)}
-              className="bg-[#22C55E] w-auto h-12 rounded px-7.5 text-center text-white font-bold text-base cursor-pointer "
-            >
-              Accept
-            </button>
-            <button
-              onClick={() => navigate("/club-request")}
-              className="bg-background  w-auto h-12 rounded px-7.5 text-center text-secondary-text font-bold text-base cursor-pointer "
-            >
-              Decline
-            </button>
+            {!selectedOwner?.user.isVerified && (
+              <>
+                <button
+                  onClick={() => handleAccept(selectedOwner?.user.id)}
+                  className="bg-[#22C55E] w-auto h-12 rounded px-7.5 text-center text-white font-bold text-base cursor-pointer "
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => navigate("/club-request")}
+                  className="bg-background  w-auto h-12 rounded px-7.5 text-center text-secondary-text font-bold text-base cursor-pointer "
+                >
+                  Decline
+                </button>
+              </>
+            )}
           </div>
         </div>
       </CustomBox>
@@ -196,14 +202,21 @@ const ViewClubRequest = () => {
 
       {/* Club Photos */}
       <CustomBox customClasses="p-4">
-        <h2 className="text-lg font-medium">Club Photos</h2>
+        <div className="w-full flex flex-row justify-between items-center-safe">
+          <h2 className="text-lg font-medium">Club Photos</h2>
+          <CustomButton
+            label="View All"
+            buttonStyle="secondary"
+            customStyles="rounded-full! px-6!"
+          />
+        </div>
         {selectedOwner?.clubPhotos.length === 0 ? (
           <div className="mt-6 text-center text-xl font-bold">
-            No Documents Found
+            No Club Photo Available
           </div>
         ) : (
           <div
-            className={`mt-3 flex flex-row w-full flex-wrap gap-4 ${(selectedOwner?.clubPhotos?.length ?? 0) >= 3 ? "justify-between" : "justify-start"}`}
+            className={`mt-3 flex flex-row w-full flex-wrap gap-4 ${(selectedOwner?.clubPhotos?.length ?? 0) >= 5 ? "justify-between" : "justify-start"}`}
           >
             {selectedOwner?.clubPhotos.map((item, idx) => (
               <img
@@ -219,10 +232,17 @@ const ViewClubRequest = () => {
 
       {/* Club Documents */}
       <CustomBox customClasses="p-4">
-        <h2 className="text-lg font-medium">Club Documents</h2>
+        <div className="w-full flex flex-row justify-between items-center-safe">
+          <h2 className="text-lg font-medium">Club Documents</h2>
+          <CustomButton
+            label="View All"
+            buttonStyle="secondary"
+            customStyles="rounded-full! px-6!"
+          />
+        </div>
         {selectedOwner?.club_owner_documents.length === 0 ? (
-          <div className="mt-6 text-center text-xl font-bold">
-            No Documents Found
+          <div className="my-6 text-center text-xl font-bold">
+            No Documents Available
           </div>
         ) : (
           <div
@@ -282,68 +302,3 @@ const ViewClubRequest = () => {
 };
 
 export default ViewClubRequest;
-
-type InfoFieldProps = {
-  label: string;
-  value?: string | null;
-  className?: string;
-};
-
-export const InfoField = ({
-  label,
-  value,
-  className = "w-[25%]",
-}: InfoFieldProps) => {
-  return (
-    <div className={`${className} flex flex-col gap-y-0.5`}>
-      <span className="text-sm text-secondary-text">{label}</span>
-      <span className="text-base text-black">{value || "-"}</span>
-    </div>
-  );
-};
-
-import { MoreHorizontal } from "lucide-react";
-import dayjs from "dayjs";
-
-type FileCardProps = {
-  fileName: string;
-  fileSize: number;
-  uploadDate: string;
-  onMenuClick?: () => void;
-};
-
-export const FileCard = ({
-  fileName,
-  fileSize,
-  uploadDate,
-  onMenuClick,
-}: FileCardProps) => {
-  return (
-    <div className="w-[32%] rounded-[10px] border border-divider bg-white py-1.75 pl-4 pr-2.5 flex items-center justify-between">
-      {/* Left Section */}
-      <div className="flex items-center gap-x-1.5">
-        {/* File Icon */}
-        <div className="w-8 h-8 rounded-md bg-lightRed flex items-center justify-center p-1.5">
-          <img src={ICONS.Doc} alt="doc" className="w-full h-full" />
-        </div>
-
-        {/* File Info */}
-        <div className="flex flex-col">
-          <span className="text-sm text-black">{fileName}</span>
-          <span className="text-[10px] leading-3.5 text-black">
-            {dayjs(uploadDate).format("MMMM DD, YYYY")} |{" "}
-            {formatFileSize(fileSize)}
-          </span>
-        </div>
-      </div>
-
-      {/* Right Menu Button */}
-      <button
-        onClick={onMenuClick}
-        className="w-8 h-8 rounded-md flex items-center justify-center p-1.5 bg-background hover:bg-gray-300 transition"
-      >
-        <MoreHorizontal className="w-full h-full text-secondary-text" />
-      </button>
-    </div>
-  );
-};

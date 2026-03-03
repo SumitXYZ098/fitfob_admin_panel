@@ -4,6 +4,7 @@ import type { ClubResponse } from "../api/clubRequest/clubRequest.types";
 import {
   getClubOwnerById,
   unverifiedOwnersApi,
+  updateClubOwner,
   verifiedOwnersApi,
 } from "../api/clubRequest/clubRequestApi";
 
@@ -19,6 +20,11 @@ interface ClubOwnerState {
   fetchUnverifiedOwners: (search?: string) => Promise<void>;
   fetchVerifiedOwners: (search?: string) => Promise<void>;
   fetchOwnerById: (ownerId: number) => Promise<void>;
+
+  updateOwner: (
+  ownerId: number,
+  payload: { data: Partial<ClubResponse> }
+) => Promise<ClubResponse | null>;
 }
 
 export const useClubOwnerStore = create<ClubOwnerState>((set) => ({
@@ -83,4 +89,42 @@ export const useClubOwnerStore = create<ClubOwnerState>((set) => ({
       });
     }
   },
+
+   // 🔹 Update Club Owner
+  updateOwner: async (ownerId, payload) => {
+  set({ loading: true, error: null });
+
+  try {
+    const response = await updateClubOwner(ownerId, payload);
+
+    set((state) => ({
+      // Update in unverified list
+      unverifiedOwners: state.unverifiedOwners.map((owner) =>
+        owner.id === ownerId ? { ...owner, ...response.data } : owner
+      ),
+
+      // Update in verified list
+      verifiedOwners: state.verifiedOwners.map((owner) =>
+        owner.id === ownerId ? { ...owner, ...response.data } : owner
+      ),
+
+      // Update selected owner
+      selectedOwner:
+        state.selectedOwner?.id === ownerId
+          ? { ...state.selectedOwner, ...response.data }
+          : state.selectedOwner,
+
+      refetchTrigger: state.refetchTrigger + 1,
+      loading: false,
+    }));
+
+    return response;
+  } catch (error: any) {
+    set({
+      error: error.message || "Failed to update owner",
+      loading: false,
+    });
+    return null;
+  }
+},
 }));
