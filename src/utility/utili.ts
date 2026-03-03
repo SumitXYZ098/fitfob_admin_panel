@@ -1,13 +1,12 @@
 import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-
-dayjs.extend(customParseFormat);
 
 export const getDaysShort = (givenDate: string): string => {
-  const today = dayjs();
-  const target = dayjs(givenDate, "DD/MM/YYYY");
+  const today = dayjs().startOf("day");
+  const target = dayjs(givenDate).startOf("day");
 
   const diff = today.diff(target, "day");
 
-  return `${Math.abs(diff)}`;
+  return Math.abs(diff).toString();
 };
+
+

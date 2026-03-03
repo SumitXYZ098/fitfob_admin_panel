@@ -87,8 +87,7 @@ const Login = () => {
           setGlobalLoader(false);
           if (
             data &&
-            (localStorage.getItem("mfa") === null ||
-              localStorage.getItem("mfa") === undefined)
+            (localStorage.getItem("mfa") === null)
           ) {
             setMfa(data.mfaSetup);
             setOpenQr(true);

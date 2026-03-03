@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:1337";
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const EndPoints = {
   // Login with MFA(Multi Factor Authentication)
   login: `${BASE_URL}/api/login`,
@@ -7,4 +7,11 @@ export const EndPoints = {
   forgotPassword: `${BASE_URL}/api/auth/forgot-password`,
   verifyOtp: `${BASE_URL}/api/auth/verify-otp`,
   resetPassword: `${BASE_URL}/api/auth/reset-password`,
+
+  // Club Request
+  unverifiedClubOwners: (search: string = "") =>
+    `${BASE_URL}/api/club-owners/unverified?search=${search}`,
+  verifiedClubOwners: (search: string = "") =>
+    `${BASE_URL}/api/club-owners?search=${search}`,
+  getClubOwner: (ownerId: string) => `${BASE_URL}/api/club-owners/${ownerId}`,
 };

@@ -7,6 +7,7 @@ import ForgotPassword from "../pages/auth/ForgotPassword";
 import VerifyOtp from "../pages/auth/VerifyOtp";
 import ResetPassword from "../pages/auth/ResetPassword";
 import ClubRequest from "../pages/clubRequest/ClubRequest";
+import ViewClubRequest from "../pages/viewClubRequest/ViewClubRequest";
 
 const ProtectedRoute = () => {
   const location = useLocation();
@@ -23,34 +24,40 @@ const ProtectedRoute = () => {
 
 const AppRoutes = () => {
   return (
-   <Routes>
-  {/* Public Routes */}
-  <Route path="/login" element={<Login />} />
-  <Route path="/logout" element={<Logout />} />
-  <Route path="/forgot-password" element={<ForgotPassword />} />
-  <Route path="/verify-otp" element={<VerifyOtp />} />
-  <Route path="/reset-password" element={<ResetPassword />} />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/logout" element={<Logout />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
-  {/* Protected Routes */}
-  <Route element={<ProtectedRoute />}>
-    <Route path="/" element={<Dashboard />} />
-    <Route path="/settings" element={<div>Settings Page</div>} />
-    <Route path="/profile" element={<div>Profile Page</div>} />
-    <Route path="/club-request" element={<ClubRequest />} />
-    <Route path="/clubs" element={<div>Clubs Page</div>} />
-    <Route path="/users" element={<div>User's Page</div>} />
-    <Route path="/earnings" element={<div>Earnings Page</div>} />
-    <Route path="/check-in" element={<div>Check In Page</div>} />
-    <Route path="/payouts" element={<div>Payouts Page</div>} />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/settings" element={<div>Settings Page</div>} />
+        <Route path="/profile" element={<div>Profile Page</div>} />
+        {/* <Route path="/club-request" element={<ClubRequest />} />
+        <Route path="/view-club-request/:id" element={<ViewClubRequest />} /> */}
+        <Route path="/clubs" element={<div>Clubs Page</div>} />
+        <Route path="/users" element={<div>User's Page</div>} />
+        <Route path="/earnings" element={<div>Earnings Page</div>} />
+        <Route path="/check-in" element={<div>Check In Page</div>} />
+        <Route path="/payouts" element={<div>Payouts Page</div>} />
 
-    {/* Nested /app */}
-    <Route path="/app">
-      <Route index element={<Navigate to="facilities" replace />} />
-      <Route path="facilities" element={<div>App Facilities Page</div>} />
-      <Route path="club-types" element={<div>App Club Types Page</div>} />
-    </Route>
-  </Route>
-</Routes>
+        {/* Nested /app */}
+        <Route path="/club-request">
+          <Route index element={<ClubRequest />} />
+          <Route path="view/:id" element={<ViewClubRequest />} />
+        </Route>
+
+        <Route path="/app">
+          <Route index element={<Navigate to="facilities" replace />} />
+          <Route path="facilities" element={<div>App Facilities Page</div>} />
+          <Route path="club-types" element={<div>App Club Types Page</div>} />
+        </Route>
+      </Route>
+    </Routes>
   );
 };
 
