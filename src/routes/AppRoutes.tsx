@@ -1,4 +1,10 @@
-import { Navigate, Outlet, Route, Routes, useLocation } from "react-router";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router";
 import Login from "../pages/auth/Login";
 import Logout from "../pages/auth/Logout";
 import DashboardLayout from "../components/layouts/DashboardLayout";
@@ -8,6 +14,9 @@ import VerifyOtp from "../pages/auth/VerifyOtp";
 import ResetPassword from "../pages/auth/ResetPassword";
 import ClubRequest from "../pages/clubRequest/ClubRequest";
 import ViewClubRequest from "../pages/viewClubRequest/ViewClubRequest";
+import ClubList from "../pages/clubs/ClubList";
+import { useEffect } from "react";
+import { useAuthStore } from "../store/auth.store";
 
 const ProtectedRoute = () => {
   const location = useLocation();
@@ -23,6 +32,15 @@ const ProtectedRoute = () => {
 };
 
 const AppRoutes = () => {
+  const { setSession } = useAuthStore();
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      setSession(
+        JSON.parse(localStorage.getItem("user") || "").jwt,
+        JSON.parse(localStorage.getItem("user") || "").user.id,
+      );
+    }
+  }, [setSession]);
   return (
     <Routes>
       {/* Public Routes */}
@@ -39,15 +57,22 @@ const AppRoutes = () => {
         <Route path="/profile" element={<div>Profile Page</div>} />
         {/* <Route path="/club-request" element={<ClubRequest />} />
         <Route path="/view-club-request/:id" element={<ViewClubRequest />} /> */}
-        <Route path="/clubs" element={<div>Clubs Page</div>} />
+        {/* <Route path="/clubs" element={<ClubList />} /> */}
         <Route path="/users" element={<div>User's Page</div>} />
         <Route path="/earnings" element={<div>Earnings Page</div>} />
         <Route path="/check-in" element={<div>Check In Page</div>} />
         <Route path="/payouts" element={<div>Payouts Page</div>} />
 
         {/* Nested /app */}
+
         <Route path="/club-request">
           <Route index element={<ClubRequest />} />
+          <Route path="view/:id" element={<ViewClubRequest />} />
+          <Route path="edit/:id" element={<ViewClubRequest />} />
+        </Route>
+
+        <Route path="/clubs">
+          <Route index element={<ClubList />} />
           <Route path="view/:id" element={<ViewClubRequest />} />
         </Route>
 

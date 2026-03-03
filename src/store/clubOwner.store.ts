@@ -18,7 +18,7 @@ interface ClubOwnerState {
 
   fetchUnverifiedOwners: (search?: string) => Promise<void>;
   fetchVerifiedOwners: (search?: string) => Promise<void>;
-  fetchOwnerById: (ownerId: string) => Promise<void>;
+  fetchOwnerById: (ownerId: number) => Promise<void>;
 }
 
 export const useClubOwnerStore = create<ClubOwnerState>((set) => ({
@@ -55,7 +55,7 @@ export const useClubOwnerStore = create<ClubOwnerState>((set) => ({
     try {
       const response = await verifiedOwnersApi(search);
       set({
-        verifiedOwners: response,
+        verifiedOwners: response.data,
         loading: false,
       });
     } catch (error: any) {
@@ -67,13 +67,13 @@ export const useClubOwnerStore = create<ClubOwnerState>((set) => ({
   },
 
   // 🔹 Fetch Single Owner
-  fetchOwnerById: async (ownerId: string) => {
+  fetchOwnerById: async (ownerId: number) => {
     set({ loading: true, error: null });
 
     try {
       const response = await getClubOwnerById(ownerId);
       set({
-        selectedOwner: response,
+        selectedOwner: response.data,
         loading: false,
       });
     } catch (error: any) {

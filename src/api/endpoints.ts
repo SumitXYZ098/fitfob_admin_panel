@@ -13,5 +13,10 @@ export const EndPoints = {
     `${BASE_URL}/api/club-owners/unverified?search=${search}`,
   verifiedClubOwners: (search: string = "") =>
     `${BASE_URL}/api/club-owners?search=${search}`,
-  getClubOwner: (ownerId: string) => `${BASE_URL}/api/club-owners/${ownerId}`,
+  getClubOwner: (ownerId: number) => `${BASE_URL}/api/club-owners/${ownerId}`,
+  verifyApproval: (userId: number) =>
+    `${BASE_URL}/api/verify-approval/${userId}`,
+
+
+  // /api/verify-approval
 };

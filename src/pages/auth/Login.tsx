@@ -52,6 +52,7 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem("user")) {
+      
       setSession(
         JSON.parse(localStorage.getItem("user") || "").jwt,
         JSON.parse(localStorage.getItem("user") || "").user.id,

@@ -1,10 +1,18 @@
 import axios from "axios";
 import { EndPoints } from "../endpoints";
 import api from "../apiInstance";
+import { useAuthStore } from "../../store/auth.store";
 
 export const unverifiedOwnersApi = async (search: string) => {
+  const { token } = useAuthStore.getState();
+  console.log(token);
+
   try {
-    const response = await api.get(EndPoints.unverifiedClubOwners(search));
+    const response = await api.get(EndPoints.unverifiedClubOwners(search), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -15,8 +23,13 @@ export const unverifiedOwnersApi = async (search: string) => {
 };
 
 export const verifiedOwnersApi = async (search: string) => {
+  const { token } = useAuthStore.getState();
   try {
-    const response = await api.get(EndPoints.verifiedClubOwners(search));
+    const response = await api.get(EndPoints.verifiedClubOwners(search), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -26,9 +39,31 @@ export const verifiedOwnersApi = async (search: string) => {
   }
 };
 
-export const getClubOwnerById = async (ownerId: string) => {
+export const getClubOwnerById = async (ownerId: number) => {
+  const { token } = useAuthStore.getState();
   try {
-    const response = await api.get(EndPoints.getClubOwner(ownerId));
+    const response = await api.get(EndPoints.getClubOwner(ownerId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.error.message);
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+export const verifyApproval = async (userId: number) => {
+  const { token } = useAuthStore.getState();
+  try {
+    const response = await api.post(EndPoints.verifyApproval(userId), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

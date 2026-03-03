@@ -8,7 +8,11 @@ import Search from "./search.svg";
 import Logout from "./logout.svg";
 import FitfobLogo from "./fitfob.svg";
 import DummyClubProfile from "./dummyClubProfile.svg";
-
+import Chat from "./chat.svg";
+import Edit from "./Edit.svg";
+import Location from "./loc.svg";
+import Tick from "./playerStop.svg";
+import Doc from "./doc.svg";
 
 // Route Icons
 import App from "./app.svg";
@@ -27,6 +31,7 @@ import DashboardFill from "./dashboardFill.svg";
 import EarnFill from "./earningsFill.svg";
 import PayoutsFill from "./payoutsFill.svg";
 import UserFill from "./usersFill.svg";
+import Verified from "./verified.svg";
 
 export const ICONS = {
   FITFOB,
@@ -38,10 +43,30 @@ export const ICONS = {
   Logout,
   FitfobLogo,
   DummyClubProfile,
-  
+  Chat,
+  Edit,
+  Location,
+  Verified,
+  Tick,
+  Doc,
+
   // Route Icons
-  App, CheckIn, ClubReq, Clubs, Dashboard, Earn, Payouts, User,
-  AppFill, CheckInFill, ClubReqFill, ClubsFill, DashboardFill, EarnFill, PayoutsFill, UserFill,
+  App,
+  CheckIn,
+  ClubReq,
+  Clubs,
+  Dashboard,
+  Earn,
+  Payouts,
+  User,
+  AppFill,
+  CheckInFill,
+  ClubReqFill,
+  ClubsFill,
+  DashboardFill,
+  EarnFill,
+  PayoutsFill,
+  UserFill,
 };
 
 export const IMAGES = {

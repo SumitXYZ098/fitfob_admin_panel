@@ -23,7 +23,7 @@ export const useVerifiedOwners = (search: string = "") => {
   return { verifiedOwners, loading, error, fetchVerifiedOwners };
 };
 
-export const useClubOwnerDetails = (ownerId: string) => {
+export const useClubOwnerDetails = (ownerId: number) => {
   const { selectedOwner, fetchOwnerById, loading, error } = useClubOwnerStore();
 
   useEffect(() => {

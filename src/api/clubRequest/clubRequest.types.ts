@@ -1,6 +1,7 @@
 export interface ClubResponse {
   id: number;
   publishedAt: string | null;
+  createdAt: string;
 
   ownerName: string;
   phoneNumber: string;

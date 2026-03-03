@@ -6,16 +6,13 @@ import CustomSearch from "../../components/atoms/customSearch/CustomSearch";
 import CustomButton from "../../components/atoms/customButton/CustomButton";
 import { FilterList, Visibility } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { getDaysShort } from "../../utility/utili";
 import { ICONS } from "../../assets/exports";
 import { useNavigate } from "react-router";
-import { useUnverifiedOwners } from "../../hooks/clubOwner/useClubOwner";
-import dayjs from "dayjs";
+import { useVerifiedOwners } from "../../hooks/clubOwner/useClubOwner";
 
-const ClubRequest = () => {
+const ClubList = () => {
   const navigate = useNavigate();
-  const { unverifiedOwners, loading, fetchUnverifiedOwners } =
-    useUnverifiedOwners();
+  const { verifiedOwners, loading, fetchVerifiedOwners } = useVerifiedOwners();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
 
@@ -46,6 +43,15 @@ const ClubRequest = () => {
       width: 160,
     },
     {
+      field: "phoneNumber",
+      headerName: "Phone No.",
+      width: 100,
+      renderCell: (params) =>
+        params.row.phoneNumber
+          ? `*****${params.row.phoneNumber?.slice(5)}`
+          : "Na",
+    },
+    {
       field: "clubId",
       headerName: "Id No.",
       width: 100,
@@ -57,44 +63,15 @@ const ClubRequest = () => {
       width: 160,
       renderCell: (params) => `${params.row.city}, ${params.row.state}`,
     },
-    {
-      field: "createdAt",
-      headerName: "Date",
-      width: 100,
-      renderCell: (params) => dayjs(params.row.createdAt).format("DD/MM/YYYY"),
-    },
+
     {
       field: "status",
       headerName: "Status",
       width: 110,
       renderCell: (params) => {
-        const days = getDaysShort(params.row.createdAt);
-        const numericDays = parseInt(days, 10);
-
-        let bgColor = "";
-        let borderColor = "";
-
-        if (numericDays <= 2) {
-          bgColor = "bg-[#22C55E]";
-          borderColor = "border-[#22C55E]";
-        } else if (numericDays <= 6) {
-          bgColor = "bg-[#FCD92B]";
-          borderColor = "border-[#FCD92B]";
-        } else {
-          bgColor = "bg-[#FF0000]";
-          borderColor = "border-[#FF0000]";
-        }
-
         return (
-          <div
-            className={`relative px-6.25 py-2 text-xs text-white rounded-[52px] ${bgColor}`}
-          >
-            {params.row.user.isVerified === false && "Pending"}
-            <span
-              className={`absolute -top-1.5 -right-1.5 bg-white px-2 py-1 rounded-full text-secondary-text border ${borderColor}`}
-            >
-              {days}D
-            </span>
+          <div className="relative px-6.25 py-2 text-xs rounded-[52px]  bg-lightGreen text-green">
+            {params.row.user.isVerified === true && "Approved"}
           </div>
         );
       },
@@ -106,7 +83,7 @@ const ClubRequest = () => {
       renderCell: (params) => {
         return (
           <button
-            onClick={() => navigate(`/club-request/view/${params.row.id}`)}
+            onClick={() => navigate(`/clubs/view/${params.row.id}`)}
             className="bg-bg p-1 rounded text-secondary-text cursor-pointer group-hover:bg-white"
           >
             <Visibility className="w-5 h-5 opacity-50" />
@@ -116,18 +93,18 @@ const ClubRequest = () => {
     },
   ];
 
-  if (!unverifiedOwners) return;
+  if (!verifiedOwners) return;
 
-  const totalPages = Math.ceil(unverifiedOwners.length / rowsPerPage);
+  const totalPages = Math.ceil(verifiedOwners.length / rowsPerPage);
 
-  const paginatedRows = unverifiedOwners?.slice(
+  const paginatedRows = verifiedOwners?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage,
   );
   return (
     <CustomBox customClasses="p-4 h-full flex flex-col gap-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-medium">All Club Requests</h2>
+        <h2 className="text-lg font-medium">Recently Add Clubs</h2>
         <div className="flex flex-row gap-x-3">
           <CustomSearch
             placeholder="Search Clubs"
@@ -136,7 +113,7 @@ const ClubRequest = () => {
                 paddingY: "12px !important",
               },
             }}
-            onSearch={(term) => fetchUnverifiedOwners(term)}
+            onSearch={(term) => fetchVerifiedOwners(term)}
           />
           <CustomButton
             buttonStyle="white"
@@ -154,15 +131,15 @@ const ClubRequest = () => {
         emptyViewTitle="No Club Request found"
         emptyViewSubTitle="There are not any Club Request"
         withPagination={true}
-        onRowClick={(row) => navigate(`/club-request/view/${row.id}`)}
+        onRowClick={(row) => navigate(`/clubs/view/${row.id}`)}
         paginationControls={
           <Box display="flex" justifyContent="space-between" mt={2}>
             <span className="text-secondary-text text-sm">
-              {unverifiedOwners.length > 0
+              {verifiedOwners.length > 0
                 ? `${page * rowsPerPage + 1} - ${Math.min(
                     (page + 1) * rowsPerPage,
-                    unverifiedOwners.length,
-                  )} of ${unverifiedOwners.length} items`
+                    verifiedOwners.length,
+                  )} of ${verifiedOwners.length} items`
                 : "No items"}
             </span>
             <Box display="flex" gap={1}>
@@ -190,4 +167,4 @@ const ClubRequest = () => {
   );
 };
 
-export default ClubRequest;
+export default ClubList;

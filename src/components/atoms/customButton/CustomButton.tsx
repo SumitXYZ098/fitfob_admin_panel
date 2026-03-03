@@ -17,7 +17,7 @@ const getButtonStyles = (
     case "primary":
       return `bg-primary text-white cursor-pointer`;
     case "secondary":
-      return `bg-background text-black-50 cursor-pointer`;
+      return `bg-background text-secondary-text cursor-pointer`;
     case "disabled":
       return `bg-white text-secondary-text rounded-lg text-sm border border-divider shadow-[0_1px_2px_0_rgba(14,24,41,0.05)] cursor-not-allowed`;
     case "white":
