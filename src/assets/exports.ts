@@ -9,7 +9,7 @@ import Logout from "./logout.svg";
 import FitfobLogo from "./fitfob.svg";
 import DummyClubProfile from "./dummyClubProfile.svg";
 import Chat from "./chat.svg";
-import Edit from "./Edit.svg";
+import Edit from "./edit.svg";
 import Location from "./loc.svg";
 import Tick from "./playerStop.svg";
 import Doc from "./doc.svg";
